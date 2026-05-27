@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Deep Regrets – Indagine Oceanica</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{background:#b0a898;font-family:'Crimson Pro',Georgia,serif;}
+
+/* ---- OUTER WRAPPER: scala la scheda per adattarla allo schermo ---- */
+#scaler-wrap{width:100%;overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch;}
+#scaler{width:880px;padding:1.2rem;display:flex;flex-direction:column;gap:1.5rem;}
+
+/* CONTROLS */
+.controls{display:flex;gap:0.6rem;justify-content:center;align-items:center;flex-wrap:wrap;}
+.ctrl-btn{font-family:'Special Elite',cursive;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+  padding:0.55rem 1.1rem;border:1px solid #5a5040;background:#3a3028;color:#f2edd8;
+  cursor:pointer;border-radius:2px;-webkit-appearance:none;touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);}
+.ctrl-btn:active{background:#6a6058;}
+.ctrl-btn.sec{background:#d4cdb8;color:#3a3028;border-color:#8a7d62;}
+.ctrl-btn.sec:active{background:#b4ada8;}
+.saved-msg{font-family:'Special Elite',cursive;font-size:9px;letter-spacing:0.2em;color:#2a5a6b;opacity:0;transition:opacity 0.4s;}
+.saved-msg.show{opacity:1;}
+
+/* SHEET */
+.sheet{background:#f2edd8;border:2px solid #8a7d62;box-shadow:2px 2px 8px rgba(0,0,0,0.3);position:relative;}
+.sheet::before{content:'';position:absolute;inset:5px;border:1px solid rgba(138,125,98,0.35);pointer-events:none;}
+.sheet-page{display:none;}.sheet-page.active{display:block;}
+
+/* HEADER */
+.sheet-header{display:flex;align-items:center;border-bottom:2px solid #2a2a2a;padding:0.5rem 0.7rem;}
+.logo-box{background:#1a1a1a;color:#f2edd8;font-family:'Special Elite',cursive;padding:0.2rem 0.5rem;font-size:10px;line-height:1.2;text-align:center;flex-shrink:0;}
+.logo-box .deep{font-size:15px;display:block;}
+.htitle{flex:1;padding-left:0.6rem;}
+.heyebrow{font-family:'Special Elite',cursive;font-size:8px;letter-spacing:0.3em;color:#5a5040;margin-bottom:0.15rem;}
+.hmain{font-family:'Special Elite',cursive;font-size:2rem;color:#1a1a1a;line-height:1;}
+
+/* BODY */
+.sheet-body{display:grid;grid-template-columns:255px 1fr;position:relative;z-index:1;}
+.col-l{border-right:1px solid #8a7d62;padding:0.5rem 0.7rem;}
+.col-r{padding:0.4rem 0.7rem;}
+
+/* LABELS & FIELDS */
+.slabel{font-family:'Special Elite',cursive;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:#5a5040;margin-bottom:0.25rem;display:block;}
+.fline{border:none;border-bottom:1px solid #5a5040;background:transparent;width:100%;font-family:'Crimson Pro',serif;font-size:13px;color:#1a1a1a;padding:0.1rem 0.2rem;outline:none;}
+.fline:focus{background:rgba(255,255,255,0.5);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:0.6rem;}
+.fblock{margin-bottom:0.6rem;}
+
+/* EQUIP */
+.equip-table{width:100%;border-collapse:collapse;font-size:12px;}
+.equip-table th{font-family:'Special Elite',cursive;font-size:7px;letter-spacing:0.3em;color:#5a5040;padding:0.1rem 0.25rem;border-bottom:1px solid #8a7d62;text-align:left;}
+.equip-table td{padding:0.12rem 0.25rem;border-bottom:1px solid rgba(138,125,98,0.2);vertical-align:middle;}
+.equip-table td:last-child{text-align:right;font-family:'Special Elite',cursive;font-size:10px;color:#5a5040;font-weight:bold;}
+.equip-table input[type=checkbox]{width:15px;height:15px;accent-color:#2a5a6b;cursor:pointer;touch-action:manipulation;}
+.item-name{font-family:'Crimson Pro',serif;font-size:12px;color:#1a1a1a;font-style:italic;}
+.eg-head td{padding:0!important;border:none!important;}
+.eg-head span{font-family:'Special Elite',cursive;font-size:7px;letter-spacing:0.2em;color:#f2edd8;background:#3a3028;padding:0.18rem 0.4rem;display:block;margin:0.3rem -0.7rem;}
+
+/* FISH */
+.fish-title{font-family:'Special Elite',cursive;font-size:0.95rem;color:#1a1a1a;border-bottom:1px solid #2a2a2a;padding-bottom:0.2rem;margin-bottom:0.3rem;display:flex;justify-content:space-between;align-items:baseline;}
+.fish-title .rsub{font-size:7px;letter-spacing:0.3em;text-transform:uppercase;color:#5a5040;}
+.fish-table{width:100%;border-collapse:collapse;font-size:12px;}
+.fish-table th{font-family:'Special Elite',cursive;font-size:7px;letter-spacing:0.2em;color:#5a5040;padding:0.15rem 0.25rem;border-bottom:1px solid #8a7d62;white-space:nowrap;}
+.fish-table th.c,.fish-table td.c{text-align:center;}
+.fish-table td{padding:0.14rem 0.25rem;border-bottom:1px solid rgba(138,125,98,0.18);vertical-align:middle;}
+.fish-table tr:nth-child(even) td{background:rgba(138,125,98,0.06);}
+.fish-table input[type=checkbox]{width:15px;height:15px;accent-color:#2a5a6b;touch-action:manipulation;}
+.pcell{font-family:'Special Elite',cursive;font-size:10px;color:#2a5a6b;text-align:center;}
+.ci{border:none;border-bottom:1px solid rgba(90,80,64,0.35);background:transparent;font-family:'Crimson Pro',serif;font-size:12px;color:#1a1a1a;width:100%;outline:none;padding:0 0.1rem;}
+.ci:focus{background:rgba(255,255,255,0.5);}
+.cn{width:32px;text-align:center;}
+.csel{font-size:11px;border:none;border-bottom:1px solid rgba(90,80,64,0.35);background:transparent;outline:none;cursor:pointer;font-family:'Crimson Pro',serif;color:#1a1a1a;width:100%;touch-action:manipulation;}
+.bs{font-family:'Special Elite',cursive;font-size:8px;background:#d4eef0;color:#1a5a60;padding:1px 4px;border-radius:1px;}
+.bo{font-family:'Special Elite',cursive;font-size:8px;background:#faeae3;color:#8b3a1a;padding:1px 4px;border-radius:1px;}
+.prof-sep td{padding:0;background:transparent!important;}
+.prof-sep-inner{font-family:'Special Elite',cursive;font-size:8px;background:#e8e2d0;color:#3a3028;padding:0.12rem 0.3rem;border-top:1px solid #8a7d62;border-bottom:1px solid #8a7d62;letter-spacing:0.2em;text-align:center;}
+.solo-note{font-family:'Special Elite',cursive;font-size:7px;letter-spacing:0.1em;color:#8a7d62;text-align:center;margin-top:0.25rem;}
+
+/* LATO B */
+.sheet-body-b{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid #2a2a2a;}
+.col-b{padding:0.5rem 0.7rem;}
+.col-b:first-child{border-right:1px solid #8a7d62;}
+.note-area{border:1px solid rgba(90,80,64,0.25);background:rgba(255,255,255,0.2);width:100%;font-family:'Crimson Pro',serif;font-style:italic;font-size:12px;color:#1a1a1a;padding:0.35rem;outline:none;resize:vertical;min-height:55px;line-height:1.5;}
+
+/* BANNER MOBILE */
+#banner{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;
+  background:rgba(10,6,2,0.96);flex-direction:column;align-items:center;justify-content:center;
+  gap:1.2rem;padding:2rem;text-align:center;}
+#banner.on{display:flex;}
+.rb-icon{font-size:3rem;animation:rh 2s ease-in-out infinite;}
+@keyframes rh{0%,100%{transform:rotate(0deg);}50%{transform:rotate(90deg);}}
+.rb-title{font-family:'Special Elite',cursive;color:#f2edd8;font-size:1.05rem;letter-spacing:0.12em;line-height:1.7;}
+.rb-sub{font-family:'Crimson Pro',serif;font-style:italic;color:#8a9eaa;font-size:0.85rem;line-height:1.5;}
+.rb-skip{font-family:'Special Elite',cursive;font-size:11px;letter-spacing:0.25em;color:#f2edd8;
+  cursor:pointer;border:1px solid #f2edd8;padding:0.7rem 1.6rem;background:transparent;
+  -webkit-appearance:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+.rb-skip:active{background:rgba(255,255,255,0.15);}
+
+@media print{
+  #banner{display:none!important;}
+  .controls{display:none!important;}
+  body{background:white;}
+  #scaler{padding:0;}
+  .sheet-page{display:block!important;}
+  .sheet{box-shadow:none;border:1px solid #ccc;page-break-after:always;}
+}
+</style>
+</head>
+<body>
+
+<!-- BANNER PORTRAIT -->
+<div id="banner">
+  <div class="rb-icon">📱</div>
+  <div class="rb-title">RUOTA IL DISPOSITIVO<br>IN ORIZZONTALE</div>
+  <div class="rb-sub">La scheda è ottimizzata per landscape.<br>Usa pinch-to-zoom per avvicinarti ai campi.</div>
+  <button class="rb-skip" id="skipBtn">CONTINUA COMUNQUE</button>
+</div>
+
+<div id="scaler-wrap">
+<div id="scaler">
+
+<div class="controls">
+  <button class="ctrl-btn sec" onclick="switchPage('A')">◄ LATO A</button>
+  <button class="ctrl-btn sec" onclick="switchPage('B')">LATO B ►</button>
+  <button class="ctrl-btn" onclick="saveData()">💾 Salva</button>
+  <button class="ctrl-btn sec" onclick="resetData()">↺ Reset</button>
+  <button class="ctrl-btn sec" onclick="window.print()">🖨 Stampa</button>
+  <span class="saved-msg" id="savedMsg">Salvato ✓</span>
+</div>
+
+<!-- ======== LATO A ======== -->
+<div class="sheet sheet-page active" id="pageA">
+  <div class="sheet-header">
+    <div class="logo-box"><span class="deep">DEEP</span>REGRETS</div>
+    <div class="htitle">
+      <div class="heyebrow">◇ LA GUIDA DEL PESCATORE ALLA VITA MARINA ◇</div>
+      <div class="hmain">INDAGINE OCEANICA</div>
+    </div>
+  </div>
+
+  <div class="sheet-body">
+    <!-- COL SINISTRA: campi + equipaggiamento -->
+    <div class="col-l">
+      <div class="fblock">
+        <span class="slabel">INDAGINE CONDOTTA DA</span>
+        <input class="fline" type="text" id="A_by" placeholder="…" oninput="autoSave()">
+      </div>
+      <div class="frow">
+        <div>
+          <span class="slabel">DATA DI PARTENZA</span>
+          <input class="fline" type="date" id="A_start" onchange="autoSave()">
+        </div>
+        <div>
+          <span class="slabel">DATA DI COMPLETAMENTO</span>
+          <input class="fline" type="date" id="A_end" onchange="autoSave()">
+        </div>
+      </div>
+      <span class="slabel">EQUIPAGGIAMENTO ACQUISTATO</span>
+      <table class="equip-table">
+        <thead><tr><th>$</th><th>NOME</th><th>COSTO</th></tr></thead>
+        <tbody>
+          <tr class="eg-head"><td colspan="3"><span>EQUIPAGGIA TUTTO – UN USO PER PARTITA</span></td></tr>
+          <tr><td><input type="checkbox" id="eq_vermi" onchange="autoSave()"></td><td class="item-name">Latta di Vermi</td><td>—</td></tr>
+          <tr><td><input type="checkbox" id="eq_larve" onchange="autoSave()"></td><td class="item-name">Sacco di Larve</td><td>9</td></tr>
+          <tr><td><input type="checkbox" id="eq_sang" onchange="autoSave()"></td><td class="item-name">Vasetto di Sanguisughe</td><td>19</td></tr>
+          <tr><td><input type="checkbox" id="eq_past" onchange="autoSave()"></td><td class="item-name">Pastura</td><td>29</td></tr>
+          <tr><td><input type="checkbox" id="eq_ninfa" onchange="autoSave()"></td><td class="item-name">Occhi di Ninfa</td><td>7</td></tr>
+          <tr><td><input type="checkbox" id="eq_cann" onchange="autoSave()"></td><td class="item-name">Cannocchiale Insolito</td><td>11</td></tr>
+          <tr><td><input type="checkbox" id="eq_libro" onchange="autoSave()"></td><td class="item-name">Libro degli Abissi</td><td>13</td></tr>
+          <tr><td><input type="checkbox" id="eq_lant" onchange="autoSave()"></td><td class="item-name">Lanterna da Immersione</td><td>19</td></tr>
+          <tr><td><input type="checkbox" id="eq_camp" onchange="autoSave()"></td><td class="item-name">Campana Subacquea</td><td>23</td></tr>
+          <tr><td><input type="checkbox" id="eq_te" onchange="autoSave()"></td><td class="item-name">Tè Nero</td><td>5</td></tr>
+          <tr><td><input type="checkbox" id="eq_birra" onchange="autoSave()"></td><td class="item-name">Birra</td><td>15</td></tr>
+          <tr class="eg-head"><td colspan="3"><span>EQUIPAGGIA TUTTO</span></td></tr>
+          <tr><td><input type="checkbox" id="eq_d3" onchange="autoSave()"></td><td class="item-name">3 Dadi Pescatore</td><td>—</td></tr>
+          <tr><td><input type="checkbox" id="eq_dblu" onchange="autoSave()"></td><td class="item-name">Dado Attr. Blu</td><td>20</td></tr>
+          <tr><td><input type="checkbox" id="eq_dverde" onchange="autoSave()"></td><td class="item-name">Dado Attr. Verde</td><td>40</td></tr>
+          <tr><td><input type="checkbox" id="eq_daranc" onchange="autoSave()"></td><td class="item-name">Dado Attr. Arancione</td><td>80</td></tr>
+          <tr class="eg-head"><td colspan="3"><span>EQUIPAGGIA TUTTO – UN USO PER GIORNO</span></td></tr>
+          <tr><td><input type="checkbox" id="eq_cf" onchange="autoSave()"></td><td class="item-name">Canna Fortunata</td><td>10</td></tr>
+          <tr><td><input type="checkbox" id="eq_cb" onchange="autoSave()"></td><td class="item-name">Canna di Bamboo</td><td>16</td></tr>
+          <tr><td><input type="checkbox" id="eq_cleo" onchange="autoSave()"></td><td class="item-name">Canna in Legno e Ottone</td><td>20</td></tr>
+          <tr><td><input type="checkbox" id="eq_ct" onchange="autoSave()"></td><td class="item-name">Canna da Traina</td><td>26</td></tr>
+          <tr><td><input type="checkbox" id="eq_cd" onchange="autoSave()"></td><td class="item-name">Canna del Destino</td><td>30</td></tr>
+          <tr><td><input type="checkbox" id="eq_cm" onchange="autoSave()"></td><td class="item-name">Canna di Mancinella</td><td>36</td></tr>
+          <tr><td><input type="checkbox" id="eq_cn" onchange="autoSave()"></td><td class="item-name">Canna di Narvalo</td><td>50</td></tr>
+          <tr><td><input type="checkbox" id="eq_ca" onchange="autoSave()"></td><td class="item-name">Canna degli Abissi</td><td>60</td></tr>
+          <tr><td><input type="checkbox" id="eq_cinf" onchange="autoSave()"></td><td class="item-name">Canna dell'Infinito</td><td>80</td></tr>
+          <tr class="eg-head"><td colspan="3"><span>EQUIPAGGIA TUTTO – UN USO PER GIORNO</span></td></tr>
+          <tr><td><input type="checkbox" id="eq_mleo" onchange="autoSave()"></td><td class="item-name">Mulin. in Legno e Ottone</td><td>10</td></tr>
+          <tr><td><input type="checkbox" id="eq_mot" onchange="autoSave()"></td><td class="item-name">Mulinello in Ottone</td><td>20</td></tr>
+          <tr><td><input type="checkbox" id="eq_moss" onchange="autoSave()"></td><td class="item-name">Mulinello d'Ossa</td><td>25</td></tr>
+          <tr><td><input type="checkbox" id="eq_mcen" onchange="autoSave()"></td><td class="item-name">Mulinello Centerpin</td><td>30</td></tr>
+          <tr><td><input type="checkbox" id="eq_mpro" onchange="autoSave()"></td><td class="item-name">Mulin. delle Profondità</td><td>40</td></tr>
+          <tr><td><input type="checkbox" id="eq_minf" onchange="autoSave()"></td><td class="item-name">Mulinello dell'Infinito</td><td>70</td></tr>
+        </tbody>
+      </table>
+    </div><!-- col-l -->
+
+    <!-- COL DESTRA: Pesce Piccolo -->
+    <div class="col-r">
+      <div class="fish-title">PESCE PICCOLO: <span class="rsub">RISULTATI REGISTRATI</span></div>
+      <table class="fish-table">
+        <thead><tr>
+          <th class="c" style="width:20px;">✓</th>
+          <th class="c" style="width:20px;">N°</th>
+          <th style="width:28px;">PROF.</th>
+          <th style="width:58px;">TIPO</th>
+          <th>NOME</th>
+          <th class="c" style="width:26px;">$</th>
+          <th class="c" style="width:26px;">⚡</th>
+        </tr></thead>
+        <tbody id="tbP"></tbody>
+      </table>
+      <div class="solo-note">⚓ SOLO NELL'ESPANSIONE ORRIBILI TENTACOLI</div>
+    </div>
+  </div>
+</div><!-- pageA -->
+
+<!-- ======== LATO B ======== -->
+<div class="sheet sheet-page" id="pageB">
+  <div class="sheet-body-b">
+    <div class="col-b">
+      <div class="fish-title">PESCE MEDIO: <span class="rsub">RISULTATI REGISTRATI</span></div>
+      <table class="fish-table">
+        <thead><tr>
+          <th class="c" style="width:20px;">✓</th>
+          <th class="c" style="width:20px;">N°</th>
+          <th style="width:28px;">PROF.</th>
+          <th style="width:58px;">TIPO</th>
+          <th>NOME</th>
+          <th class="c" style="width:26px;">$</th>
+          <th class="c" style="width:26px;">⚡</th>
+        </tr></thead>
+        <tbody id="tbM"></tbody>
+      </table>
+      <div style="margin-top:0.6rem;">
+        <span class="slabel">NOTE</span>
+        <textarea class="note-area" id="B_note" rows="5" oninput="autoSave()" placeholder="Annotazioni, pesci da ricatturare…"></textarea>
+      </div>
+    </div>
+    <div class="col-b">
+      <div class="fish-title">PESCE GRANDE: <span class="rsub">RISULTATI REGISTRATI</span></div>
+      <table class="fish-table">
+        <thead><tr>
+          <th class="c" style="width:20px;">✓</th>
+          <th class="c" style="width:20px;">N°</th>
+          <th style="width:28px;">PROF.</th>
+          <th style="width:58px;">TIPO</th>
+          <th>NOME</th>
+          <th class="c" style="width:26px;">$</th>
+          <th class="c" style="width:26px;">⚡</th>
+        </tr></thead>
+        <tbody id="tbG"></tbody>
+      </table>
+      <div class="solo-note">⚓ SOLO NELL'ESPANSIONE ORRIBILI TENTACOLI</div>
+    </div>
+  </div>
+</div><!-- pageB -->
+
+</div><!-- scaler -->
+</div><!-- scaler-wrap -->
+
+<script>
+// ===== FISH CONFIG =====
+var FC = {
+  P:[ // Piccolo
+    {p:'I',  t:'Sano',  n:'Caravella Portoghese',val:'1',d:'×',pre:1},
+    {p:'I',  t:'Sano',  n:'Salmone Rosso',       val:'1',d:'1',pre:1},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'Sano',  n:'Bathyphysa Conifera', val:'2',d:'×',pre:1},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'Orrido',n:'Colonia Abissale',    val:'3',d:'×',pre:1},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0}
+  ],
+  M:[ // Medio
+    {p:'I',  t:'Orrido',n:'Contrabbandiere della Marea',  val:'',d:'×',pre:1},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'Orrido',n:'Commerciante delle Profondità',val:'',d:'×',pre:1},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'Orrido',n:'Mercante degli Abissi',        val:'',d:'×',pre:1},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0}
+  ],
+  G:[ // Grande
+    {p:'II', t:'Sano',  n:'Megattera',              val:'',d:'×',pre:1},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'Orrido',n:'Balena di Rocabarraigh',val:'',d:'×',pre:1,tent:1},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
+    {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0}
+  ]
+};
+
+// ===== DATA =====
+var D = {fish:{P:{},M:{},G:{}},eq:{},note:'',by:'',s:'',e:''};
+
+// ===== BUILD TABLE =====
+function buildTable(key, tbId) {
+  var tb = document.getElementById(tbId);
+  if (!tb) return;
+  var html = '';
+  var rows = FC[key];
+  var lastP = null;
+  for (var i=0; i<rows.length; i++) {
+    var r = rows[i];
+    if (r.p !== lastP) {
+      html += '<tr class="prof-sep"><td colspan="7"><div class="prof-sep-inner">PROFONDITÀ '+r.p+'</div></td></tr>';
+      lastP = r.p;
+    }
+    var k = key+'_'+i;
+    var fd = D.fish[key][k] || {};
+    var chk = !!fd.checked;
+    var tipo = fd.tipo !== undefined ? fd.tipo : r.t;
+    var nome = fd.nome !== undefined ? fd.nome : r.n;
+    var val  = fd.val  !== undefined ? fd.val  : r.val;
+    var dif  = fd.dif  !== undefined ? fd.dif  : r.d;
+    var op   = chk ? ' style="opacity:0.4"' : '';
+    var tent = r.tent ? '⚓ ' : '';
+
+    var tipoHtml;
+    if (r.pre && tipo) {
+      tipoHtml = '<span class="'+(tipo==='Sano'?'bs':'bo')+'">'+tipo+'</span>';
+    } else {
+      tipoHtml = '<select class="csel" onchange="ff(\''+key+'\','+i+',\'tipo\',this.value)">'
+        +'<option value=""'+(tipo?'':' selected')+'>—</option>'
+        +'<option value="Sano"'+(tipo==='Sano'?' selected':'')+'>Sano</option>'
+        +'<option value="Orrido"'+(tipo==='Orrido'?' selected':'')+'>Orrido</option>'
+        +'</select>';
+    }
+    var nomeHtml = (r.pre && nome)
+      ? tent+'<em>'+esc(nome)+'</em>'
+      : tent+'<input class="ci" type="text" value="'+esc(nome)+'" placeholder="…" oninput="ff(\''+key+'\','+i+',\'nome\',this.value)">';
+    var valHtml = (r.pre && val)
+      ? '<b style="font-family:\'Special Elite\',cursive;font-size:11px;">'+esc(val)+'</b>'
+      : '<input class="ci cn" type="text" value="'+esc(val)+'" maxlength="3" oninput="ff(\''+key+'\','+i+',\'val\',this.value)">';
+    var difHtml = (r.pre && dif)
+      ? '<b style="font-family:\'Special Elite\',cursive;font-size:11px;">'+esc(dif)+'</b>'
+      : '<input class="ci cn" type="text" value="'+esc(dif)+'" maxlength="3" oninput="ff(\''+key+'\','+i+',\'dif\',this.value)">';
+
+    html += '<tr'+op+'>'
+      +'<td class="c"><input type="checkbox"'+(chk?' checked':'')+' onchange="fc(\''+key+'\','+i+',this)" style="touch-action:manipulation"></td>'
+      +'<td class="c pcell">'+(i+1)+'</td>'
+      +'<td class="pcell">'+r.p+'</td>'
+      +'<td>'+tipoHtml+'</td>'
+      +'<td>'+nomeHtml+'</td>'
+      +'<td class="c">'+valHtml+'</td>'
+      +'<td class="c">'+difHtml+'</td>'
+      +'</tr>';
+  }
+  tb.innerHTML = html;
+}
+
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function fc(key,i,el){
+  var k=key+'_'+i; if(!D.fish[key][k]) D.fish[key][k]={};
+  D.fish[key][k].checked=el.checked;
+  var tr=el.closest('tr'); if(tr) tr.style.opacity=el.checked?'0.4':'1';
+  autoSave();
+}
+function ff(key,i,field,val){
+  var k=key+'_'+i; if(!D.fish[key][k]) D.fish[key][k]={};
+  D.fish[key][k][field]=val; autoSave();
+}
+
+// ===== PAGE SWITCH =====
+function switchPage(p){
+  document.querySelectorAll('.sheet-page').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('page'+p).classList.add('active');
+}
+
+// ===== SAVE =====
+function collect(){
+  D.by=document.getElementById('A_by').value;
+  D.s=document.getElementById('A_start').value;
+  D.e=document.getElementById('A_end').value;
+  D.note=document.getElementById('B_note').value;
+  document.querySelectorAll('[id^="eq_"]').forEach(function(cb){D.eq[cb.id]=cb.checked;});
+}
+function apply(){
+  document.getElementById('A_by').value=D.by||'';
+  document.getElementById('A_start').value=D.s||'';
+  document.getElementById('A_end').value=D.e||'';
+  document.getElementById('B_note').value=D.note||'';
+  document.querySelectorAll('[id^="eq_"]').forEach(function(cb){cb.checked=!!D.eq[cb.id];});
+  buildTable('P','tbP');
+  buildTable('M','tbM');
+  buildTable('G','tbG');
+}
+function saveData(){
+  collect();
+  try{localStorage.setItem('dr4',JSON.stringify(D));}catch(e){}
+  var m=document.getElementById('savedMsg');
+  m.classList.add('show'); setTimeout(function(){m.classList.remove('show');},2000);
+}
+function autoSave(){
+  collect();
+  try{localStorage.setItem('dr4',JSON.stringify(D));}catch(e){}
+}
+function resetData(){
+  if(!confirm('Resettare tutta la scheda?')) return;
+  D={fish:{P:{},M:{},G:{}},eq:{},note:'',by:'',s:'',e:''};
+  try{localStorage.removeItem('dr4');}catch(e){}
+  apply();
+}
+
+// ===== BANNER =====
+var dismissed=false;
+function checkBanner(){
+  if(dismissed) return;
+  var b=document.getElementById('banner');
+  var mobile=('ontouchstart' in window)||window.innerWidth<900;
+  var portrait=window.innerHeight>window.innerWidth;
+  if(mobile&&portrait){b.classList.add('on');}else{b.classList.remove('on');}
+}
+document.getElementById('skipBtn').addEventListener('click',function(e){
+  e.preventDefault(); e.stopPropagation();
+  dismissed=true;
+  document.getElementById('banner').classList.remove('on');
+});
+window.addEventListener('resize',checkBanner);
+window.addEventListener('orientationchange',function(){setTimeout(checkBanner,300);});
+
+// ===== BOOT =====
+(function(){
+  try{var r=localStorage.getItem('dr4');if(r) D=JSON.parse(r);}catch(e){}
+  apply();
+  checkBanner();
+})();
+</script>
+</body>
+</html>
