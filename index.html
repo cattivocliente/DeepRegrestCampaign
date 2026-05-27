@@ -278,15 +278,15 @@ body{background:#b0a898;font-family:'Crimson Pro',Georgia,serif;}
 // ===== FISH CONFIG =====
 var FC = {
   P:[ // Piccolo
-    {p:'I',  t:'Sano',  n:'Caravella Portoghese',val:'1',d:'×',pre:1},
-    {p:'I',  t:'Sano',  n:'Salmone Rosso',       val:'1',d:'1',pre:1},
+    {p:'I',  t:'Sano',  n:'Caravella Portoghese',val:'1',d:'×',pre:1,chk:1},
+    {p:'I',  t:'Sano',  n:'Salmone Rosso',       val:'1',d:'1',pre:1,chk:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
-    {p:'II', t:'Sano',  n:'Bathyphysa Conifera', val:'2',d:'×',pre:1},
+    {p:'II', t:'Sano',  n:'Bathyphysa Conifera', val:'2',d:'×',pre:1,chk:1},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
@@ -294,7 +294,7 @@ var FC = {
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
-    {p:'III',t:'Orrido',n:'Colonia Abissale',    val:'3',d:'×',pre:1},
+    {p:'III',t:'Orrido',n:'Colonia Abissale',    val:'3',d:'×',pre:1,chk:1},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
@@ -304,7 +304,7 @@ var FC = {
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0}
   ],
   M:[ // Medio
-    {p:'I',  t:'Orrido',n:'Contrabbandiere della Marea',  val:'',d:'×',pre:1},
+    {p:'I',  t:'Orrido',n:'Contrabbandiere della Marea',  val:'×',d:'×',pre:1,chk:1},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
@@ -312,7 +312,7 @@ var FC = {
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
     {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
-    {p:'II', t:'Orrido',n:'Commerciante delle Profondità',val:'',d:'×',pre:1},
+    {p:'II', t:'Orrido',n:'Commerciante delle Profondità',val:'×',d:'×',pre:1,chk:1},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
@@ -320,7 +320,7 @@ var FC = {
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
-    {p:'III',t:'Orrido',n:'Mercante degli Abissi',        val:'',d:'×',pre:1},
+    {p:'III',t:'Orrido',n:'Mercante degli Abissi',        val:'×',d:'×',pre:1,chk:1},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
@@ -330,7 +330,7 @@ var FC = {
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0}
   ],
   G:[ // Grande
-    {p:'II', t:'Sano',  n:'Megattera',              val:'',d:'×',pre:1},
+    {p:'II', t:'Sano',  n:'Megattera',              val:'×',d:'×',pre:1,chk:1},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
@@ -338,7 +338,7 @@ var FC = {
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
-    {p:'III',t:'Orrido',n:'Balena di Rocabarraigh',val:'',d:'×',pre:1,tent:1},
+    {p:'III',t:'Orrido',n:'Balena di Rocabarraigh',val:'×',d:'×',pre:1,tent:1,chk:1},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
@@ -367,7 +367,7 @@ function buildTable(key, tbId) {
     }
     var k = key+'_'+i;
     var fd = D.fish[key][k] || {};
-    var chk = !!fd.checked;
+    var chk = fd.checked !== undefined ? !!fd.checked : !!r.chk;
     var tipo = fd.tipo !== undefined ? fd.tipo : r.t;
     var nome = fd.nome !== undefined ? fd.nome : r.n;
     var val  = fd.val  !== undefined ? fd.val  : r.val;
