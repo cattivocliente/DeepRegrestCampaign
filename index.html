@@ -330,6 +330,14 @@ var FC = {
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0}
   ],
   G:[ // Grande
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},{p:'I',t:'',n:'',val:'',d:'',pre:0},
+    {p:'I',  t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'Sano',  n:'Megattera',              val:'×',d:'×',pre:1,chk:1},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
@@ -339,6 +347,7 @@ var FC = {
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'II', t:'',n:'',val:'',d:'',pre:0},{p:'II',t:'',n:'',val:'',d:'',pre:0},
     {p:'III',t:'Orrido',n:'Balena di Rocabarraigh',val:'×',d:'×',pre:1,tent:1,chk:1},
+    {p:'III',t:'Sano',  n:'Forziere del Tesoro',   val:'×',d:'×',pre:1,chk:1},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
     {p:'III',t:'',n:'',val:'',d:'',pre:0},{p:'III',t:'',n:'',val:'',d:'',pre:0},
@@ -350,7 +359,8 @@ var FC = {
 };
 
 // ===== DATA =====
-var D = {fish:{P:{},M:{},G:{}},eq:{},note:'',by:'',s:'',e:''};
+var DEFAULTS = {eq:{eq_vermi:true, eq_d3:true}};
+var D = {fish:{P:{},M:{},G:{}},eq:{eq_vermi:true,eq_d3:true},note:'',by:'',s:'',e:''};
 
 // ===== BUILD TABLE =====
 function buildTable(key, tbId) {
@@ -440,7 +450,10 @@ function apply(){
   document.getElementById('A_start').value=D.s||'';
   document.getElementById('A_end').value=D.e||'';
   document.getElementById('B_note').value=D.note||'';
-  document.querySelectorAll('[id^="eq_"]').forEach(function(cb){cb.checked=!!D.eq[cb.id];});
+  document.querySelectorAll('[id^="eq_"]').forEach(function(cb){
+    if(D.eq[cb.id] !== undefined) cb.checked = !!D.eq[cb.id];
+    else cb.checked = !!(DEFAULTS.eq[cb.id]);
+  });
   buildTable('P','tbP');
   buildTable('M','tbM');
   buildTable('G','tbG');
